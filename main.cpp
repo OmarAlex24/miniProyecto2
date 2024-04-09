@@ -1,224 +1,204 @@
-#include <iostream> 
-#include <string>
+#include <iostream>
 
 using namespace std;
 
+struct nodo {
+  int dato;
+  nodo *siguiente;
+};
 
-double suma ( double n1, double n2 ){
-    return n1 + n2;
+nodo *crearNodo(int dato) {
+  nodo *nuevo = new nodo;
+  nuevo->dato = dato;
+  nuevo->siguiente = nullptr;
+  return nuevo;
 }
 
-double resta ( double n1, double n2 ){
-    return n1 - n2;
+void limpiarPantalla() {
+  cout << "\033[H\033[J";
 }
 
-double multiplicacion ( double n1, double n2 ){
-    return n1 * n2;
+bool esNumero(char dato) {
+  return dato >= '0' && dato <= '9';
 }
 
-double division ( double n1, double n2 ){
-    return n1 / n2;
-}
-
-bool estaVacio ( string numero ){
-    return numero[0] == ' ' || numero[0] == '\0';
-}
-
-bool validarGuiones ( string numero ){
-    short contador = 0;
-    int i = 0;
-    bool bandera = 1;
-    while ( bandera && numero[i] != '\0' ){
-        if ( numero[i] == '-' ){
-            contador++;
-        }
-
-        if ( contador > 1 ){
-            bandera = 0;
-        }
-        i++;
-    }
-    return bandera;
-}
-
-bool validarPuntos ( string numero ){
-    short contador = 0;
-    int i = 0;
-    bool bandera = 1;
-    while ( bandera && numero[i]!= '\0' ){
-        if ( numero[i] == '.' ){
-            contador++;
-        }
-        if ( contador > 1 ){
-            bandera = 0;
-        }
-        i++;
-    }
-    return bandera;
-}
-
-bool EsNumeroNegativoValido ( string numero ){
-    int i = 0;
-    bool bandera = 1; 
-    while ( bandera && numero[i] != '\0' ){
-        if ( numero [i] == '-' ){
-            if ( numero[i+1] == ' ' || numero[i+1] == '\0' || i-1 > -1 ){
-                bandera = 0;
-            }
-        }
-        i++;
-    }
-    return bandera;
-}
-
-bool esDoubleValido ( string numero ){
-    if ( numero[0] == '.' ){
-        if ( numero[1] == '\0' ){
-            return 0;
-        }
-    }
-    return 1;
-}
-
-bool EsNumero ( string numero ){
-    int i = 0;
-    int bandera = 1;
-    while ( bandera && numero[i] != '\0' ){
-        if (( numero[i] < '0' || numero[i] > '9') && numero[i] != '-' && numero[i] != '.'){
-            bandera = 0;
-        } 
-
-        i++;
-    }
-    return bandera;
-}
-
-bool esCadenaValida ( string numero ){
-    
-    if ( estaVacio( numero )){
-        return 0;
-    }
-    if ( !validarGuiones( numero )){
-        return 0;
-    }
-    
-    if ( !EsNumeroNegativoValido( numero )){
-        return 0;
-    }
-
-    if (!EsNumero( numero )){
-        return 0;
-    }
-
-    if (!validarPuntos( numero )){
-        return 0;
-    }
-
-    if ( !esDoubleValido ( numero )){
-        return 0;
-    }
-    
-    return 1;
-}
-
-bool EsOperador ( char operador ){
-    return  ( operador == '+' || operador == '-' || operador == '/' || operador == '*' || operador == '=' );
-}
-
-double ingresarNumero (){
-    string numeroAux;
-
-    do {
-        cout << "       Numero: ";
-        getline(cin,numeroAux);
-        if ( !esCadenaValida( numeroAux) ){
-            cout << "Ingreso un numero invalido, intentalo nuevamente." << endl;
-        }
-        
-    } while ( !esCadenaValida(numeroAux) ); 
-    return stod(numeroAux);
-}
-
-bool unicoOperador ( string operador ){
-    int i  = 0;
-    bool bandera = 1;
-    while ( bandera && operador[i]!= '\0' ){
-        if ( EsOperador( operador[i] ) ){
-            if ( operador[i+1] != '\0'){
-                bandera = 0;
-            }
-        }
-        i++;
-    }
-    return bandera;
-}
-
-bool esOperadorValido ( string operador ){
-    if ( estaVacio ( operador )){
-        return 0;
-    }
-
-    if ( !unicoOperador( operador )){
-        return 0;
-    }
-
-    return EsOperador ( operador[0] );
-}
-
-char ingresarOperador (){
-    string operadorAux ;
-    do { 
-        cout << "       Operador (+, -, /, *, =): ";
-        getline ( cin , operadorAux);
-        if ( !esOperadorValido ( operadorAux) ){
-            cout << "Ingreso un operador invalido, intentalo nuevamente" << endl;
-        }
-    } while ( !esOperadorValido( operadorAux ));
-    return operadorAux[0];
-}
-
-void realizarOperacion ( double numero, char operador, double &resultado ){
-    switch (operador){
-    case '+':
-        resultado = suma ( resultado, numero); 
-        break;
-    case '-':
-        resultado = resta ( resultado, numero );
-        break;
-    case '*':
-        resultado = multiplicacion ( resultado, numero );
-        break;
-    case '/':
-        if ( numero == 0 ){
-            cout << "No se puede dividir entre cero, ingresa nuevamente el operador." << endl;
-        } else {
-        resultado = division ( resultado , numero );
-        }
-        break;
-    default:
-        resultado = resultado;
-        break;
-    }
-
-}
-
-void menuPrincipal (){
-    cout << "|**Calculadora**|" << endl;
-    double resultado, numero;
-    char operador;
-    numero = ingresarNumero();
-    resultado = numero;
-    operador = ingresarOperador();
-    while ( operador != '=' ) {
-        numero = ingresarNumero();
-        realizarOperacion ( numero, operador, resultado );
-        operador = ingresarOperador();
-    }
-    cout << "El resultado es: " << resultado << endl;
-}
-
-
-int main(){
-    menuPrincipal();
+bool esEntradaValida(string numero) {
+  if (numero[0] == '\0')
     return 0;
+
+  int i = 0;
+  bool bandera = 1;
+  while (bandera && numero[i] != '\0') {
+    if (!esNumero(numero[i]))
+      bandera = 0;
+    i++;
+  }
+  return bandera;
+}
+
+void leerDato(string &elemento) {
+  do {
+    cout << "Escribe un numero ('s' para finalizar): ";
+    getline(cin, elemento);
+    if (!esEntradaValida(elemento) && elemento != "s") {
+      limpiarPantalla();
+      cout << "Ingreso un numero invalido, porfavor intentelo nuevamente\n";
+    }
+  } while (!esEntradaValida(elemento) && elemento != "s");
+}
+
+void insertarOrdenado(nodo *&inicio, nodo *nuevo) {
+  bool bandera = 1;
+  if (inicio == nullptr) {
+    inicio = nuevo;
+    bandera = 0;
+  }
+  if (bandera && nuevo->dato <= inicio->dato) {
+    nuevo->siguiente = inicio;
+    inicio = nuevo;
+    bandera = 0;
+  }
+  nodo *aux = inicio;
+  while (bandera && aux->siguiente != nullptr) {
+    if (nuevo->dato >= aux->dato && nuevo->dato <= (aux->siguiente)->dato) {
+      nuevo->siguiente = aux->siguiente;
+      aux->siguiente = nuevo;
+      bandera = 0;
+    } else {
+      aux = aux->siguiente;
+    }
+  }
+  if (bandera) {
+    aux->siguiente = nuevo;
+  }
+}
+
+void llenarLista(nodo *&inicio, string mensaje) {
+  string elemento;
+  do {
+    cout << "Ingresar datos en " << mensaje << "\n";
+    leerDato(elemento);
+    if (elemento != "s") {
+      limpiarPantalla();
+      insertarOrdenado(inicio, crearNodo(stoi(elemento)));
+      cout << "Elemento insertado con exito\n";
+    }
+  } while (elemento != "s");
+}
+
+void imprimirLista(nodo *inicio) {
+
+  if (inicio == nullptr) {
+    cout << "La lista esta vacia\n";
+  } else {
+
+    nodo *aux = inicio;
+    while (aux != nullptr) {
+      cout << aux->dato << ' ';
+      aux = aux->siguiente;
+    }
+    cout << "\n";
+  }
+}
+
+bool estaElNodo(nodo *inicio, int elemento) {
+  if (inicio == nullptr)
+    return 0;
+
+  bool bandera = 0;
+  nodo *aux = inicio;
+  while (!bandera && aux != nullptr) {
+    if (aux->dato == elemento)
+      bandera = 1;
+    aux = aux->siguiente;
+  }
+  return bandera;
+}
+
+void insertarFinal(nodo *&inicio, nodo *nuevo) {
+
+  if (inicio == nullptr) {
+    inicio = nuevo;
+  } else {
+    nodo *aux = inicio;
+    while (aux->siguiente != nullptr) {
+      aux = aux->siguiente;
+    }
+    aux->siguiente = nuevo;
+  }
+}
+
+void unirListas(nodo *lista1, nodo *lista2, nodo *&listaFinal) {
+  if (lista1 == nullptr && lista2 == nullptr) {
+    cout << "Las listas estan vacias, primero debes llenarlas\n";
+    return;
+  }
+
+  nodo *aux = lista1;
+
+  while (aux != nullptr) {
+    if (!estaElNodo(listaFinal, aux->dato)) {
+      insertarFinal(listaFinal, crearNodo(aux->dato));
+    }
+    aux = aux->siguiente;
+  }
+
+  aux = lista2;
+  while (aux != nullptr) {
+    if (!estaElNodo(listaFinal, aux->dato)) {
+      insertarFinal(listaFinal, crearNodo(aux->dato));
+    }
+    aux = aux->siguiente;
+  }
+}
+
+void interseccionListas(nodo *lista1, nodo *lista2, nodo *&listaFinal) {
+
+  if (lista1 == nullptr && lista2 == nullptr) {
+    cout << "Las listas estan vacias, primero debes llenarlas\n";
+    return;
+  }
+
+  nodo *aux = lista1;
+  while (aux != nullptr) {
+    if (estaElNodo(lista2, aux->dato))
+      insertarFinal(listaFinal, crearNodo(aux->dato));
+    aux = aux->siguiente;
+  }
+}
+
+void diferenciaListas(nodo *lista1, nodo *lista2, nodo *&listaFinal) {
+  if (lista1 == nullptr && lista2 == nullptr) {
+    cout << "Las listas estan vacias, primero debes llenarlas\n";
+    return;
+  }
+
+  nodo *aux = lista1;
+}
+
+int main() {
+  nodo *lista1 = nullptr;
+  nodo *lista2 = nullptr;
+  nodo *u = nullptr;
+  nodo *interseccion = nullptr;
+  nodo *diferencia = nullptr;
+
+  llenarLista(lista1, "la Lista 1:");
+  llenarLista(lista2, "la Lista 2:");
+
+  cout << "\nLa lista 1 es:\n";
+  imprimirLista(lista1);
+
+  cout << "\nLa lista 2 es:\n";
+  imprimirLista(lista2);
+
+  cout << "\nAhora unimos las 2 listas: \n";
+  unirListas(lista1, lista2, u);
+  imprimirLista(u);
+
+  cout << "\nAhora, la interseccion de las 2 listas\n";
+  interseccionListas(lista1, lista2, interseccion);
+  imprimirLista(interseccion);
+
+  return 0;
 }
