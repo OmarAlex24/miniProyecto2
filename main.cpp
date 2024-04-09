@@ -1,3 +1,4 @@
+#include "validaciones.cc"
 #include <iostream>
 
 using namespace std;
@@ -23,17 +24,23 @@ bool esNumero(char dato) {
 }
 
 bool esEntradaValida(string numero) {
-  if (numero[0] == '\0')
-    return 0;
 
-  int i = 0;
-  bool bandera = 1;
-  while (bandera && numero[i] != '\0') {
-    if (!esNumero(numero[i]))
-      bandera = 0;
-    i++;
+  if (estaVacio(numero)) {
+    return 0;
   }
-  return bandera;
+  if (!validarGuiones(numero)) {
+    return 0;
+  }
+
+  if (!EsNumeroNegativoValido(numero)) {
+    return 0;
+  }
+
+  if (!EsNumero(numero)) {
+    return 0;
+  }
+
+  return 1;
 }
 
 void leerDato(string &elemento) {
@@ -80,7 +87,7 @@ void llenarLista(nodo *&inicio, string mensaje) {
     leerDato(elemento);
     if (elemento != "s") {
       limpiarPantalla();
-      insertarOrdenado(inicio, crearNodo(stoi(elemento)));
+      insertarOrdenado(inicio, crearNodo(stof(elemento)));
       cout << "Elemento insertado con exito\n";
     }
   } while (elemento != "s");
@@ -174,6 +181,13 @@ void diferenciaListas(nodo *lista1, nodo *lista2, nodo *&listaFinal) {
   }
 
   nodo *aux = lista1;
+
+  while (aux != nullptr) {
+    if (!estaElNodo(lista2, aux->dato)) {
+      insertarFinal(listaFinal, crearNodo(aux->dato));
+    }
+    aux = aux->siguiente;
+  }
 }
 
 int main() {
@@ -199,6 +213,10 @@ int main() {
   cout << "\nAhora, la interseccion de las 2 listas\n";
   interseccionListas(lista1, lista2, interseccion);
   imprimirLista(interseccion);
+
+  cout << "\nAhora, la diferencia de las 2 listas\n";
+  diferenciaListas(lista1, lista2, diferencia);
+  imprimirLista(diferencia);
 
   return 0;
 }
